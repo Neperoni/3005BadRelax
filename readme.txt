@@ -19,3 +19,4 @@ I have also only implemented inner join, outer, left, right, full are not implem
 this was actually pretty cool to do, its basically making a compiler or programming language if you think about it
 
 youtube link for demonstration:
+https://youtu.be/oo0-roM7j9o
