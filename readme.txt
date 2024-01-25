@@ -1,5 +1,4 @@
-
-* Welcome to my github
+#Welcome to my github
 *** I've completed a submission to the bonus assignment for comp3005 database management 
 ***This project is a relational database query system, it loads in databases and then can run arbitrarily (well overflow will probably happen) nested queries on the data
 ***not tested extensively
