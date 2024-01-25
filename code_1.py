@@ -137,7 +137,7 @@ def databaseSet(args):
     firstDatabaseIndex = indexOf(args, '(')+1
 
     dataBases = args[firstDatabaseIndex:-1].split(",")
-    commandType = args[0:firstDatabaseIndex-1]
+    commandType = args[0:firstDatabaseIndex-1].upper()
 
     for i in dataBases:
         if(i not in loadedDatabases):
@@ -149,20 +149,20 @@ def databaseSet(args):
     db1 = loadedDatabases[dataBases[0]]
     db2 = loadedDatabases[dataBases[1]]
     
-    if(commandType == "Union"):
+    if(commandType == "UNION"):
          result_db = {
         "title": f"{db1['title']}Union{db2['title']}",
         "labels": db1["labels"],
         "entries": db1["entries"] + [entry for entry in db2["entries"] if entry not in db1["entries"]]
         }
-    elif(commandType == "Intersect"):
+    elif(commandType == "INTERSECT"):
          # Combine titles and labels
         result_db = {
             "title": f"{db1['title']}Intersect{db2['title']}",
             "labels": db1["labels"],
             "entries": [entry for entry in db1["entries"] if entry in db2["entries"]]
         }
-    elif(commandType == "Difference"):
+    elif(commandType == "DIFFERENCE"):
         # Combine titles and labels
         result_db = {
             "title": f"{db1['title']}Difference{db2['title']}",
@@ -395,7 +395,7 @@ if __name__ == "__main__":
     print("")
     print("EXAMPLES OF NESTING COMMANDS")
     print("JOIN EID(SELECT Age>30(SET Union(Employees, Managers)),Salaries)")
-    print()
+    print("SELECT Age>30(SET Union(Employees, Managers))")
     
     while True:
         print("Please type in a command")
