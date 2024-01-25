@@ -1,6 +1,4 @@
-# A first-level heading
-## A second-level heading
-### A third-level heading
+#bruh how does formatting work
 
 #Welcome to my github
 *** I've completed a submission to the bonus assignment for comp3005 database management 
