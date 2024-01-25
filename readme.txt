@@ -16,4 +16,6 @@ Next it will print some example commands I've added, and then ask for your comma
 set and join are pretty untested, I don't think it will crash but I won't guarantee correct function
 I have also only implemented inner join, outer, left, right, full are not implemented.
 
+this was actually pretty cool to do, its basically making a compiler or programming language if you think about it
+
 youtube link for demonstration:
