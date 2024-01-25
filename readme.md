@@ -1,24 +1,20 @@
-#ahhh md
-#bruh how does formatting work
+# Welcome to my GitHub
 
-#Welcome to my github
-*** I've completed a submission to the bonus assignment for comp3005 database management 
-***This project is a relational database query system, it loads in databases and then can run arbitrarily (well overflow will probably happen) nested queries on the data
-***not tested extensively
+I've completed a submission to the bonus assignment for COMP3005 Database Management. This project is a relational database query system. It loads databases and can run arbitrarily nested queries on the data (note: overflow might occur).
 
-github link:
-https://github.com/Neperoni/3005BadRelax
+**GitHub Link:** [3005BadRelax](https://github.com/Neperoni/3005BadRelax)
 
-instructions: 
-###When the program is run, it will load all the databases in the Data folder, it assumes they are formatted correctly, so please make sure.
-Theres some examples in there on how to format the data.
+### Instructions:
 
-Next it will print some example commands I've added, and then ask for your command.
+When the program is run, it will load all the databases in the Data folder, assuming they are formatted correctly. Please make sure to check the examples provided in the folder on how to format the data.
 
-set and join are pretty untested, I don't think it will crash but I won't guarantee correct function
-I have also only implemented inner join, outer, left, right, full are not implemented.
+After loading, the program will print some example commands. You can then input your command.
 
-this was actually pretty cool to do, its basically making a compiler or programming language if you think about it
+- `set` and `join` are relatively untested. They probably won't crash, but I can't guarantee correct function.
+- Only inner join is implemented; outer, left, right, and full joins are not.
 
-youtube link for demonstration:
-https://youtu.be/oo0-roM7j9o
+This project was an interesting experience—it's akin to creating a compiler or a programming language.
+
+### YouTube Link for Demonstration:
+
+[Watch the Demonstration](https://youtu.be/oo0-roM7j9o)
