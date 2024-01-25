@@ -1,6 +1,6 @@
 import sys
 
-
+import os
 
 #imput is the form select Age>30(employees)
 #must support select, project, join, set
@@ -104,9 +104,9 @@ def select(args):
     
     targetDatabase = args[targetDatabaseIndex:indexOf(args,")")]
     
-    if(not targetQuantity.isnumeric()):
-        print("Invalid target quantity")
-        return None
+    #if(not targetQuantity.isnumeric()):
+    #    print("Invalid target quantity")
+    #    return None
     targetQuantity = targetQuantity
     
     if(targetDatabase not in loadedDatabases):
@@ -146,8 +146,8 @@ def databaseSet(args):
     newDatabase = {}
     
     #chat gpt
-    db1 = dataBases[0]
-    db2 = dataBases[1]
+    db1 = loadedDatabases[dataBases[0]]
+    db2 = loadedDatabases[dataBases[1]]
     
     if(commandType == "Union"):
          result_db = {
@@ -190,6 +190,12 @@ def join(args):
         if(i not in loadedDatabases):
             print("Target database not loaded: " + i)
             return None
+    if(targetLabel not in loadedDatabases[0]["labels"]):
+        print("Label not in database left database")
+    if(targetLabel not in loadedDatabases[1]["labels"]):
+        print("Label not in database right database")
+           
+        
     newDatabase = {}
 
     return database_inner_join(loadedDatabases[dataBases[0]], loadedDatabases[dataBases[1]], targetLabel)
@@ -280,12 +286,15 @@ def recursiveParser(argument):
         #need to find middle comma
         leftP, rightP, argumentSplitIndex = splitArguments(argument)
         
-        arg1 = argument[leftP:argumentSplitIndex]
-        arg2 = argument[argumentSplitIndex:rightP]
+        arg1 = argument[leftP+1:argumentSplitIndex].strip()
+        arg2 = argument[argumentSplitIndex+1:rightP].strip()
         
         extraArg = argument[len(command)+1:leftP+1]
         
-        result = databaseSet(extraArg+recursiveParser(arg1)+","+recursiveParser(arg2)+")")
+        arg = extraArg+recursiveParser(arg1)+","+recursiveParser(arg2)+")"
+        result = databaseSet(arg)
+        if(result == None):
+            return None
         result["title"] = str(databaseNum)
         databaseNum+=1     
         loadedDatabases[result["title"]] =result
@@ -296,12 +305,20 @@ def recursiveParser(argument):
         #need to find middle comma
         leftP, rightP, argumentSplitIndex = splitArguments(argument)
                 
-        arg1 = argument[leftP+1:argumentSplitIndex]
-        arg2 = argument[argumentSplitIndex+1:rightP]
+        arg1 = argument[leftP+1:argumentSplitIndex].strip()
+        arg2 = argument[argumentSplitIndex+1:rightP].strip()
         
         extraArg = argument[len(command)+1:leftP+1]
         
-        result = join(extraArg+recursiveParser(arg1)+","+recursiveParser(arg2)+")")
+        recursiveA = recursiveParser(arg1)
+        recursiveB = recursiveParser(arg2)
+        if(recursiveA == None or recursiveB == None):
+            return None
+        
+        arg = extraArg+recursiveA+","+recursiveB+")"
+        result = join(arg)
+        if(result == None):
+            return None
         result["title"] = str(databaseNum)
         databaseNum+=1     
         loadedDatabases[result["title"]] = result
@@ -312,16 +329,26 @@ def recursiveParser(argument):
         leftP, rightP, argumentSplitIndex = splitArguments(argument)
         extraArg = argument[len(command)+1:leftP+1]
 
+        recursiveArg = argument[leftP+1:rightP].strip()
+        recursive = recursiveParser(recursiveArg)
+        if(recursive == None):
+            return None
+        arg = extraArg+recursive+")"
+        result = select(arg)   
+        if(result == None):
+            return None
         
-        result = select(extraArg+recursiveParser(argument[leftP+1:rightP])+")")   
-    
         result["title"] = str(databaseNum)
         databaseNum+=1     
         loadedDatabases[result["title"]] =result
         return result["title"] 
     
     elif(command == "PROJECT"):#unary
-        arg = recursiveParser(argument[nextSpace+1:])
+        leftP, rightP, argumentSplitIndex = splitArguments(argument)
+        extraArg = argument[len(command)+1:leftP+1]
+        
+        recursiveArg = argument[leftP+1:].strip()
+        arg = recursiveParser(recursiveArg)
         if(arg == None):
             return None
         result = project(arg)   
@@ -333,38 +360,51 @@ def recursiveParser(argument):
     else:
         #base case, no more commands to process
         return argument    
-    
-    
-    
+
+
+import os
+
 if __name__ == "__main__":
 
     #order of commands is separated by space
 
-    #test = "union(select Age(Join(Employees,Customers)), select Age(Managers))"
+    print("Loading databases in data file")
 
-    #index = findMiddleComma(test)
-    #print(index)
-    
-    #print(test[index-3:index+5])
-
-    newdatabase = loadDatabase("Data/Employees.txt")
-    loadedDatabases[newdatabase["title"]] = newdatabase
-
-    newdatabase = loadDatabase("Data/Managers.txt")
-    loadedDatabases[newdatabase["title"]] = newdatabase
-
-    newdatabase = loadDatabase("Data/Salaries.txt")
-    loadedDatabases[newdatabase["title"]] = newdatabase
+    #chat gpt
+    data_directory = "Data/"
+    absolute_data_directory = os.path.abspath(data_directory)
+    for filename in os.listdir(absolute_data_directory):
+        if filename.endswith(".txt"):
+            file_path = os.path.join(absolute_data_directory, filename)
+            
+            newdatabase = loadDatabase(file_path)
+            loadedDatabases[newdatabase["title"]] = newdatabase
+            print(newdatabase["title"])
+         
+    print("")
+    print("EXAMPLE COMMANDS:")
+    print("SELECT Age<30(Employees)")
+    print("PROJECT Age(Employees)")
+    print("")
+    print("SET Union(Employees,Managers)")
+    print("SET Intersect(Employees,Managers)")
+    print("SET Difference(Employees,Managers)")
+    print("")
+    print("JOIN EID(Employees,Managers)")  
+    print("")
+    print("EXAMPLES OF NESTING COMMANDS")
+    print("JOIN EID(SELECT Age>30(SET Union(Employees, Managers)),Salaries)")
+    print()
     
     while True:
         print("Please type in a command")
         comamnd = input()
-        
+        if(not comamnd):
+            continue#skip empties
         result = recursiveParser(comamnd)
-        data = loadedDatabases[result]
         if(result != None):
+            data = loadedDatabases[result]
             printDatabase(data)
-        
         
         #clean out the numbers
         # Collect keys with numeric values
@@ -374,6 +414,8 @@ if __name__ == "__main__":
         for key in numeric_keys:
             del loadedDatabases[key]
                 
+
+
 
     def oneAtAtime():
 
