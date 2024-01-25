@@ -5,6 +5,7 @@ import sys
 #imput is the form select Age>30(employees)
 #must support select, project, join, set
 
+databaseNum = 0
 
 loadedDatabases = {}
 
@@ -182,12 +183,12 @@ def join(args):
     targetLabel = args[0:firstDatabaseIndex-1]
    
     if(len(dataBases) != 2):
-        print("Specify 2 databases")
+        print("Please specify 2 databases")
         return None
     
     for i in dataBases:
         if(i not in loadedDatabases):
-            print("Target database not loaded" + i)
+            print("Target database not loaded: " + i)
             return None
     newDatabase = {}
 
@@ -240,16 +241,139 @@ def project(args):
     copyDatabase["entries"] = entries
     return copyDatabase
 
+def splitArguments(argument):
+    #so if you count the number of open and closed parenthesis
+    #you can keep track of what depth you are at
+    #if the depth is 1, and you find a comma, thats the comma you're looking for
+    leftP = None
+    rightP = None
+    depth = 0
+    comma = None
+    for i, char in enumerate(argument):
+        if(char == '('):
+            if(depth == 0):
+                leftP = i
+            depth += 1
+        if(char == ')'):
+            depth -= 1
+            if(depth == 0):
+                rightP = i
+        if(depth == 1 and char == ','):
+            comma = i
+    return (leftP, rightP,comma)
+    #malformed equation i suppose
+
+    
+
+    
+    
+def recursiveParser(argument):
+    global databaseNum
+    #union(select Age(Employees), select Age(Managers))
+    
+    #find the leftmost command, should be space separated
+    command = argument.split()[0]
+    command = command.upper()
+    
+    if(command == "SET"):#binary
+        #binary
+        #need to find middle comma
+        leftP, rightP, argumentSplitIndex = splitArguments(argument)
+        
+        arg1 = argument[leftP:argumentSplitIndex]
+        arg2 = argument[argumentSplitIndex:rightP]
+        
+        extraArg = argument[len(command)+1:leftP+1]
+        
+        result = databaseSet(extraArg+recursiveParser(arg1)+","+recursiveParser(arg2)+")")
+        result["title"] = str(databaseNum)
+        databaseNum+=1     
+        loadedDatabases[result["title"]] =result
+        return result["title"] 
+
+    elif(command == "JOIN"):#binary
+        #binary
+        #need to find middle comma
+        leftP, rightP, argumentSplitIndex = splitArguments(argument)
+                
+        arg1 = argument[leftP+1:argumentSplitIndex]
+        arg2 = argument[argumentSplitIndex+1:rightP]
+        
+        extraArg = argument[len(command)+1:leftP+1]
+        
+        result = join(extraArg+recursiveParser(arg1)+","+recursiveParser(arg2)+")")
+        result["title"] = str(databaseNum)
+        databaseNum+=1     
+        loadedDatabases[result["title"]] = result
+        return result["title"] 
+    
+    elif(command == "SELECT"):#unary
+        
+        leftP, rightP, argumentSplitIndex = splitArguments(argument)
+        extraArg = argument[len(command)+1:leftP+1]
+
+        
+        result = select(extraArg+recursiveParser(argument[leftP+1:rightP])+")")   
+    
+        result["title"] = str(databaseNum)
+        databaseNum+=1     
+        loadedDatabases[result["title"]] =result
+        return result["title"] 
+    
+    elif(command == "PROJECT"):#unary
+        arg = recursiveParser(argument[nextSpace+1:])
+        if(arg == None):
+            return None
+        result = project(arg)   
+    
+        result["title"] = str(databaseNum)
+        databaseNum+=1     
+        loadedDatabases[result["title"]] =result
+        return result["title"] 
+    else:
+        #base case, no more commands to process
+        return argument    
+    
+    
     
 if __name__ == "__main__":
 
     #order of commands is separated by space
 
+    #test = "union(select Age(Join(Employees,Customers)), select Age(Managers))"
 
+    #index = findMiddleComma(test)
+    #print(index)
+    
+    #print(test[index-3:index+5])
 
+    newdatabase = loadDatabase("Data/Employees.txt")
+    loadedDatabases[newdatabase["title"]] = newdatabase
 
-    oneAtAtime
+    newdatabase = loadDatabase("Data/Managers.txt")
+    loadedDatabases[newdatabase["title"]] = newdatabase
 
+    newdatabase = loadDatabase("Data/Salaries.txt")
+    loadedDatabases[newdatabase["title"]] = newdatabase
+    
+    while True:
+        print("Please type in a command")
+        comamnd = input()
+        
+        result = recursiveParser(comamnd)
+        data = loadedDatabases[result]
+        if(result != None):
+            printDatabase(data)
+        
+        
+        #clean out the numbers
+        # Collect keys with numeric values
+        numeric_keys = [key for key in loadedDatabases.keys() if key.isnumeric()]
+
+        # Remove key-value pairs with numeric keys
+        for key in numeric_keys:
+            del loadedDatabases[key]
+                
 
     def oneAtAtime():
 
