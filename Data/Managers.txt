@@ -1,0 +1,5 @@
+Managers (EID, Name, Age, Salary) = {
+E4, Billy, 32, 70000
+E5, Jimo, 28, 80000
+E6, Juan, 29, 90000
+}

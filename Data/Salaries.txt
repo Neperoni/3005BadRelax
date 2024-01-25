@@ -1,0 +1,5 @@
+Salaries (EID, Salary) = {
+E1, 70000
+E2, 60000
+E3, 30000
+}
