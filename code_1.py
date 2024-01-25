@@ -190,9 +190,10 @@ def join(args):
         if(i not in loadedDatabases):
             print("Target database not loaded: " + i)
             return None
-    if(targetLabel not in loadedDatabases[0]["labels"]):
+        
+    if(targetLabel not in loadedDatabases[dataBases[0]]["labels"]):
         print("Label not in database left database")
-    if(targetLabel not in loadedDatabases[1]["labels"]):
+    if(targetLabel not in loadedDatabases[dataBases[0]]["labels"]):
         print("Label not in database right database")
            
         
