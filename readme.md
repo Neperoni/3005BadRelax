@@ -1,6 +1,8 @@
 # Welcome to my GitHub
 
-I've completed a submission to the bonus assignment for COMP3005 Database Management. This project is a relational database query system. It loads databases and can run arbitrarily nested queries on the data (note: overflow might occur).
+### This repository is for the bonus assignment for COMP3005 Database Management. 
+
+This project is a relational database query system. It loads databases and can run arbitrarily nested queries on the data
 
 **GitHub Link:** [3005BadRelax](https://github.com/Neperoni/3005BadRelax)
 
@@ -13,7 +15,7 @@ After loading, the program will print some example commands. You can then input 
 - `set` and `join` are relatively untested. They probably won't crash, but I can't guarantee correct function.
 - Only inner join is implemented; outer, left, right, and full joins are not.
 
-This project was an interesting experience—it's akin to creating a compiler or a programming language.
+This project was an interesting experience—it's pretty much creating a compiler or a programming language.
 
 ### YouTube Link for Demonstration:
 
