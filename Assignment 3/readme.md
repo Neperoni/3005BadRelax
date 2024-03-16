@@ -26,4 +26,4 @@ and then you can input 0-4 as the inputs
 depending on selection it will ask for attributes one at a time
 and if any attribute is incorrect, will continue to ask for  the attribute until valid
 
-## video link: to be done
+## video link: https://youtu.be/RGAzcjM-uZs
