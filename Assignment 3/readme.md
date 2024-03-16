@@ -2,12 +2,13 @@
 
 # Steps:
 First you must setup a postgre sql database
+The server is assumed to be using the schema matching the definition in Students.sql
+
 The code is set to connect to a server with the following parameters:
 ##### 127.0.01:5432
 ##### username: postgre
 ##### password: 3005
 
-The server is assumed to be using the schema matching the definition in Students.sql
 
 ### if these are not the settings of your database, please change the parameters of the psycopg2 connection
 
@@ -25,4 +26,4 @@ and then you can input 0-4 as the inputs
 depending on selection it will ask for attributes one at a time
 and if any attribute is incorrect, will continue to ask for  the attribute until valid
 
-
+##video link: to be done
