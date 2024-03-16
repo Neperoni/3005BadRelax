@@ -3,11 +3,15 @@
 # Steps:
 First you must setup a postgre sql database
 The code is set to connect to a server with the following parameters:
-### 127.0.01:5432
-### username: postgre
-### password: 3005
+##### 127.0.01:5432
+##### username: postgre
+##### password: 3005
 
-## if these are not the settings of your database, please change the parameters of the psycopg2 connection
+The server is assumed to be using the schema matching the definition in Students.sql
+
+### if these are not the settings of your database, please change the parameters of the psycopg2 connection
+
+
 
 next you just need to run the python code while the server is running
 
